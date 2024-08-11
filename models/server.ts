@@ -23,7 +23,6 @@ class Server {
         try {
             await db.authenticate();
             console.log('Database online');
-
         } catch (error) {
             throw new Error(error);
         }

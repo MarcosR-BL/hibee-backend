@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import Server from './models/server';
 
-dotenv.config();
- 
 const server = new Server();
 
 server.listen();
