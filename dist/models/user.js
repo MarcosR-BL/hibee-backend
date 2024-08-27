@@ -15,7 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const connection_1 = __importDefault(require("../db/connection"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const User = connection_1.default.define('User', {
+const user_session_1 = __importDefault(require("./user_session"));
+const User = connection_1.default.define('users', {
+    id: {
+        primaryKey: true,
+        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+    },
     first_name: {
         type: sequelize_1.DataTypes.STRING
     },
@@ -27,8 +32,15 @@ const User = connection_1.default.define('User', {
     },
     email: {
         type: sequelize_1.DataTypes.STRING
+    },
+    phone: {
+        type: sequelize_1.DataTypes.STRING
+    },
+    language: {
+        type: sequelize_1.DataTypes.STRING
     }
 });
+User.hasMany(user_session_1.default, { foreignKey: 'user_id' });
 User.beforeCreate((user) => __awaiter(void 0, void 0, void 0, function* () {
     if (user.password) {
         user.password = yield bcrypt_1.default.hash(user.password, 10);
