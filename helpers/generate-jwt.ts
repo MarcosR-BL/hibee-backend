@@ -1,10 +1,8 @@
 import jwt from 'jsonwebtoken';
+import { TokenPayload } from '../middlewares/validate-jwt';
 
-const generateJWT = ( uid = '' ) => {
+const generateJWT = ( payload : TokenPayload ) => {
     return new Promise(( resolve,reject ) => {
-
-        const payload = { uid };
-
         jwt.sign( payload,process.env.SECRETORPRIVATEKEY,{
             expiresIn: '4h'
         },( err,token ) => {

@@ -1,10 +1,9 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import db from "../db/connection";
 import bcrypt from 'bcrypt';
-import UserSessions from "./user_session";
+import UserSessions, { UserSessionsInterface } from "./user_session";
 
-
-interface User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export interface UserInterface extends Model<InferAttributes<UserInterface>, InferCreationAttributes<UserInterface>> {
     // Some fields are optional when calling UserModel.create() or UserModel.build()
     id: CreationOptional<number>;
     first_name: string;
@@ -13,10 +12,13 @@ interface User extends Model<InferAttributes<User>, InferCreationAttributes<User
     password: string;
     phone: string;
     language: string;
+    createdAt : CreationOptional<Date>;
+    updatedAt : CreationOptional<Date>;
+    user_sessions?: UserSessionsInterface[];
 }
 
 
-const User = db.define<User>('users', {
+const User = db.define<UserInterface>('users', {
     id: {
         primaryKey: true,
         type: DataTypes.INTEGER.UNSIGNED,
@@ -38,10 +40,18 @@ const User = db.define<User>('users', {
     },
     language: {
         type: DataTypes.STRING
+    },
+    createdAt:{
+        type: DataTypes.DATE
+    },
+    updatedAt:{
+        type: DataTypes.DATE
     }
 });
 
 User.hasMany(UserSessions,{ foreignKey: 'user_id' });
+UserSessions.belongsTo(User, { foreignKey: 'user_id' });
+
 
 User.beforeCreate(async (user: any) => {
     if (user.password) {
