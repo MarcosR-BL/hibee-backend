@@ -1,6 +1,7 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import db from "../db/connection";
 import CondoSettings from "./condo_settings";
+import UserSessions from "./user_session";
 
 export interface CondoInterface extends Model<InferAttributes<CondoInterface>, InferCreationAttributes<CondoInterface>> {
     id: CreationOptional<number>;
@@ -68,10 +69,6 @@ const Condo = db.define<CondoInterface>('condos', {
         type: DataTypes.DATE
     }
 });
-
-Condo.hasOne(CondoSettings, { foreignKey: 'condo_id' });
-CondoSettings.belongsTo(Condo, { foreignKey: 'condo_id' });
-
 
 export default Condo;
 

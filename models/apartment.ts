@@ -1,6 +1,6 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import db from "../db/connection";
-
+import Tower from "./towers";
 export interface ApartmentInterface extends Model<InferAttributes<ApartmentInterface>, InferCreationAttributes<ApartmentInterface>> {
     id: CreationOptional<number>;
     name: string;
@@ -24,7 +24,7 @@ const Apartment = db.define<ApartmentInterface>('apartments', {
         type: DataTypes.STRING,
     },
     status: {
-        type: DataTypes.ENUM('available','not-available','decommissioned')
+        type: DataTypes.ENUM('available', 'not-available', 'decommissioned')
     },
     condo_id: {
         type: DataTypes.INTEGER,
@@ -39,6 +39,8 @@ const Apartment = db.define<ApartmentInterface>('apartments', {
         type: DataTypes.DATE
     }
 });
+Tower.hasOne(Apartment, { foreignKey: 'torre_id' });
+Apartment.belongsTo(Tower, { foreignKey: 'torre_id' });
 
 export default Apartment;
 

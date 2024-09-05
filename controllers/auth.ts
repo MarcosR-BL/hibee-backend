@@ -5,6 +5,8 @@ import generateJWT from "../helpers/generate-jwt";
 import UserSessions from "../models/user_session";
 import Condo from "../models/condo";
 import Apartment from "../models/apartment";
+import CondoSettings from "../models/condo_settings";
+import Tower from "../models/towers";
 
 export const login = async (req: Request, res: Response) => {
 
@@ -48,10 +50,9 @@ export const login = async (req: Request, res: Response) => {
 
 export const loginIntoCondo = async (req: Request, res: Response) => {
     const { session_id } = req.body;
-
     try {
 
-        const session = await UserSessions.findByPk(session_id, { include: [User, Condo, Apartment] });
+        const session = await UserSessions.findByPk(session_id, { include: [User, { model: Condo, include: [CondoSettings] }, { model: Apartment, include: [Tower] }] });
         //generar JWT
         const token = await generateJWT({
             userId: session.user_id,

@@ -27,24 +27,12 @@ const UserSessions = db.define<UserSessionsInterface>('user_sessions', {
     },
     condo_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: Condo,
-            key: "condo_id"
-        }
     },
     apartment_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: "apartment_id"
-        }
     },
     user_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: "user_id"
-        }
     },
     status: {
         type: DataTypes.ENUM('active', 'deleted', 'inactive')
