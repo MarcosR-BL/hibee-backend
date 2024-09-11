@@ -2,6 +2,7 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import db from "../db/connection";
 import CondoSettings from "./condo_settings";
 import UserSessions from "./user_session";
+import Plan from "./plans";
 
 export interface CondoInterface extends Model<InferAttributes<CondoInterface>, InferCreationAttributes<CondoInterface>> {
     id: CreationOptional<number>;
@@ -14,9 +15,9 @@ export interface CondoInterface extends Model<InferAttributes<CondoInterface>, I
     status: string;
     time_zone: string;
     plan_id: number;
-    end_subscription: Date;
-    next_payment: Date;
-    last_payment: Date;
+    end_subscription: CreationOptional<Date>;
+    next_payment: CreationOptional<Date>;
+    last_payment: CreationOptional<Date>;
     createdAt: CreationOptional<Date>;
     updatedAt: CreationOptional<Date>;
 }
@@ -69,6 +70,9 @@ const Condo = db.define<CondoInterface>('condos', {
         type: DataTypes.DATE
     }
 });
+
+Condo.hasOne(Plan, { foreignKey: 'plan_id' });
+
 
 export default Condo;
 

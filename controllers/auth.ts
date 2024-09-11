@@ -68,3 +68,20 @@ export const loginIntoCondo = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const registerCondo = async (req: Request, res: Response) => {
+    const payload = req.body;
+    console.log(payload);
+
+    try {
+        const condo = await Condo.create({ ...payload, status: 'pending', time_zone: "America/Mexico_City" });
+        console.log("-->", condo);
+
+        res.json({ condo_id: condo.id });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Algo salio mal'
+        });
+    }
+}
