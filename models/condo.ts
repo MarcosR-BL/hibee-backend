@@ -5,7 +5,7 @@ import UserSessions from "./user_session";
 import Plan from "./plans";
 
 export interface CondoInterface extends Model<InferAttributes<CondoInterface>, InferCreationAttributes<CondoInterface>> {
-    id: CreationOptional<number>;
+    id?: CreationOptional<number>;
     name: string;
     address: string;
     city: string;
@@ -23,10 +23,6 @@ export interface CondoInterface extends Model<InferAttributes<CondoInterface>, I
 }
 
 const Condo = db.define<CondoInterface>('condos', {
-    id: {
-        primaryKey: true,
-        type: DataTypes.INTEGER.UNSIGNED,
-    },
     name: {
         type: DataTypes.STRING
     },
@@ -71,7 +67,8 @@ const Condo = db.define<CondoInterface>('condos', {
     }
 });
 
-Condo.hasOne(Plan, { foreignKey: 'plan_id' });
+Condo.belongsTo(Plan, { foreignKey: 'plan_id' });
+Plan.hasMany(Condo, { foreignKey: 'plan_id' }); 
 
 
 export default Condo;
