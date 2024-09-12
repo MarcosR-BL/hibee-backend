@@ -3,6 +3,8 @@ import db from "../db/connection";
 import CondoSettings from "./condo_settings";
 import UserSessions from "./user_session";
 import Plan from "./plans";
+import Apartment from "./apartment";
+import Tower from "./towers";
 
 export interface CondoInterface extends Model<InferAttributes<CondoInterface>, InferCreationAttributes<CondoInterface>> {
     id?: CreationOptional<number>;
@@ -20,6 +22,7 @@ export interface CondoInterface extends Model<InferAttributes<CondoInterface>, I
     last_payment: CreationOptional<Date>;
     createdAt: CreationOptional<Date>;
     updatedAt: CreationOptional<Date>;
+    code_register?: CreationOptional<string>;
 }
 
 const Condo = db.define<CondoInterface>('condos', {
@@ -64,11 +67,24 @@ const Condo = db.define<CondoInterface>('condos', {
     },
     updatedAt: {
         type: DataTypes.DATE
+    },
+    code_register: {
+        type: DataTypes.STRING
     }
 });
 
+Condo.afterCreate(async (condo: CondoInterface) => {
+    const tower_a = await Tower.create({ name: 'admin', condo_id: condo.id, type: 'admin' });
+    const tower_e = await Tower.create({ name: 'empleados', condo_id: condo.id, type: 'employee' });
+    const tower_v = await Tower.create({ name: 'vigilancia', condo_id: condo.id, type: 'surveillance' });
+
+    await Apartment.create({ name: "admin depto", status: 'available', condo_id: condo.id, phone: "", torre_id: tower_a.id });
+    await Apartment.create({ name: "empleados depto", status: 'available', condo_id: condo.id, phone: "", torre_id: tower_e.id });
+    await Apartment.create({ name: "vigilancia depto", status: 'available', condo_id: condo.id, phone: "", torre_id: tower_v.id });
+});
+
 Condo.belongsTo(Plan, { foreignKey: 'plan_id' });
-Plan.hasMany(Condo, { foreignKey: 'plan_id' }); 
+Plan.hasMany(Condo, { foreignKey: 'plan_id' });
 
 
 export default Condo;

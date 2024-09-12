@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { login, loginIntoCondo, registerCondo } from '../controllers/auth';
+import { login, loginIntoCondo, registerAdmin, registerCondo } from '../controllers/auth';
 import { check } from 'express-validator';
 import validateFields from '../middlewares/validate-fields';
-import { validatePlanId, validateSessionId } from '../helpers/db-validators';
+import { validateCondoId, validatePlanId, validateSessionId } from '../helpers/db-validators';
 
 const router = Router();
 
@@ -30,5 +30,18 @@ router.post('/register/condo', [
     validateFields
 ], registerCondo);
 
+router.post('/register/admin', [
+    check('first_name').notEmpty(),
+    check('last_name').notEmpty(),
+    check('email').notEmpty().bail().isEmail(),
+    check('password').notEmpty(),
+    check('phone').notEmpty(),
+    check('condo_id').custom(validateCondoId),
+    validateFields
+], registerAdmin);
+
+router.post('/register/resident', [
+
+]);
 export default router;
 

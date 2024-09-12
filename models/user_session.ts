@@ -5,7 +5,7 @@ import User, { UserInterface } from "./user";
 import Apartment from "./apartment";
 
 export interface UserSessionsInterface extends Model<InferAttributes<UserSessionsInterface>, InferCreationAttributes<UserSessionsInterface>> {
-    id: CreationOptional<number>;
+    id?: CreationOptional<number>;
     user_type: string;
     condo_id: number;
     apartment_id: number;
@@ -18,10 +18,6 @@ export interface UserSessionsInterface extends Model<InferAttributes<UserSession
 }
 
 const UserSessions = db.define<UserSessionsInterface>('user_sessions', {
-    id: {
-        primaryKey: true,
-        type: DataTypes.INTEGER.UNSIGNED,
-    },
     user_type: {
         type: DataTypes.ENUM('admin', 'employee', 'resident', 'guard')
     },

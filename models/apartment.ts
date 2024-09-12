@@ -2,7 +2,7 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import db from "../db/connection";
 import Tower from "./towers";
 export interface ApartmentInterface extends Model<InferAttributes<ApartmentInterface>, InferCreationAttributes<ApartmentInterface>> {
-    id: CreationOptional<number>;
+    id?: CreationOptional<number>;
     name: string;
     phone: string;
     status: string;
@@ -13,10 +13,6 @@ export interface ApartmentInterface extends Model<InferAttributes<ApartmentInter
 }
 
 const Apartment = db.define<ApartmentInterface>('apartments', {
-    id: {
-        primaryKey: true,
-        type: DataTypes.INTEGER.UNSIGNED,
-    },
     name: {
         type: DataTypes.STRING
     },
@@ -39,7 +35,8 @@ const Apartment = db.define<ApartmentInterface>('apartments', {
         type: DataTypes.DATE
     }
 });
-Tower.hasOne(Apartment, { foreignKey: 'torre_id' });
+
+Tower.hasMany(Apartment, { foreignKey: 'torre_id' });
 Apartment.belongsTo(Tower, { foreignKey: 'torre_id' });
 
 export default Apartment;

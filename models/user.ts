@@ -5,7 +5,7 @@ import UserSessions, { UserSessionsInterface } from "./user_session";
 
 export interface UserInterface extends Model<InferAttributes<UserInterface>, InferCreationAttributes<UserInterface>> {
     // Some fields are optional when calling UserModel.create() or UserModel.build()
-    id: CreationOptional<number>;
+    id?: CreationOptional<number>;
     first_name: string;
     last_name: string;
     email: string;
@@ -19,10 +19,6 @@ export interface UserInterface extends Model<InferAttributes<UserInterface>, Inf
 
 
 const User = db.define<UserInterface>('users', {
-    id: {
-        primaryKey: true,
-        type: DataTypes.INTEGER.UNSIGNED,
-    },
     first_name: {
         type: DataTypes.STRING
     },
@@ -53,7 +49,7 @@ User.hasMany(UserSessions,{ foreignKey: 'user_id' });
 UserSessions.belongsTo(User, { foreignKey: 'user_id' });
 
 
-User.beforeCreate(async (user: any) => {
+User.beforeCreate(async (user: UserInterface) => {
     if (user.password) {
         user.password = await bcrypt.hash(user.password, 10);
     }
