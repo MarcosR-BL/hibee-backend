@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { login, loginIntoCondo, registerAdmin, registerCondo } from '../controllers/auth';
+import { login, loginIntoCondo, registerAdmin, registerCondo, registerResident } from '../controllers/auth';
 import { check } from 'express-validator';
 import validateFields from '../middlewares/validate-fields';
-import { validateCondoId, validatePlanId, validateSessionId } from '../helpers/db-validators';
+import { validateApartmentId, validateCodeCondo, validateCondoId, validatePlanId, validateSessionId, validateTowerId } from '../helpers/db-validators';
 
 const router = Router();
+
+const typeUsers = ['admin', 'employee', 'resident', 'guard'];
 
 router.post('/login', [
     check('email', 'el correo es obligatorio').isEmail(),
@@ -41,7 +43,18 @@ router.post('/register/admin', [
 ], registerAdmin);
 
 router.post('/register/resident', [
+    check('code_register').custom(validateCodeCondo),
+    check('first_name').notEmpty(),
+    check('last_name').notEmpty(),
+    check('email').notEmpty().bail().isEmail(),
+    check('password').notEmpty(),
+    check('phone').notEmpty(),
+    check('comite_member').notEmpty().bail().isBoolean(),
+    check('tower_id').custom(validateTowerId),
+    check('apartment_id').custom(validateApartmentId),
+    check('user_type').notEmpty().bail().isIn(typeUsers),
+    validateFields
+], registerResident);
 
-]);
 export default router;
 

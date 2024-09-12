@@ -73,7 +73,7 @@ export const loginIntoCondo = async (req: Request, res: Response) => {
 export const registerCondo = async (req: Request, res: Response) => {
     const payload = req.body;
     const uuid = uuidv4().replace(/-/g, '');
-    const code_register = uuid.slice(0, 10); 
+    const code_register = uuid.slice(0, 10);
     try {
         let condo = await Condo.create({ ...payload, status: 'pending', time_zone: "America/Mexico_City", code_register });
         res.json({ condo_id: condo.id });
@@ -91,6 +91,22 @@ export const registerAdmin = async (req: Request, res: Response) => {
         const apartment = await Tower.findOne({ where: { condo_id, type: 'admin' }, include: Apartment });
         const user = await User.create({ first_name, last_name, email, password, phone });
         const session = await UserSessions.create({ user_type: 'admin', condo_id, apartment_id: apartment.apartments[0].id, user_id: user.id });
+        res.json({ session, user });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Something went wrong, please contact support.'
+        });
+    }
+}
+
+export const registerResident = async (req: Request, res: Response) => {
+    const { code_register, first_name, last_name, email, password, phone, apartment_id, user_type, comite_member } = req.body;
+    try {
+        const condo = await Condo.findOne({ where: { code_register } });
+        const user = await User.create({ first_name, last_name, email, password, phone });
+        const session = await UserSessions.create({ user_type, condo_id: condo.id, apartment_id, user_id: user.id, comite_member });
+
         res.json({ session, user });
     } catch (error) {
         console.log(error);

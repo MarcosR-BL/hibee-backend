@@ -7,7 +7,7 @@ export interface ApartmentInterface extends Model<InferAttributes<ApartmentInter
     phone: string;
     status: string;
     condo_id: number;
-    torre_id: number;
+    torre_id: CreationOptional<number>;
     createdAt: CreationOptional<Date>;
     updatedAt: CreationOptional<Date>;
 }

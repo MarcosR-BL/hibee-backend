@@ -15,6 +15,7 @@ export interface UserSessionsInterface extends Model<InferAttributes<UserSession
     updatedAt: CreationOptional<Date>;
     condo?: CondoInterface;
     user?: UserInterface;
+    comite_member: boolean
 }
 
 const UserSessions = db.define<UserSessionsInterface>('user_sessions', {
@@ -38,6 +39,9 @@ const UserSessions = db.define<UserSessionsInterface>('user_sessions', {
     },
     updatedAt: {
         type: DataTypes.DATE
+    },
+    comite_member: {
+        type: DataTypes.BOOLEAN
     }
 });
 

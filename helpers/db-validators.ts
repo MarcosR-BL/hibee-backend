@@ -1,5 +1,7 @@
+import Apartment from "../models/apartment";
 import Condo from "../models/condo";
 import Plan from "../models/plans"
+import Tower from "../models/towers";
 import UserSessions from "../models/user_session";
 
 export const validatePlanId = async (id: number) => {
@@ -15,7 +17,6 @@ export const validateSessionId = async (id: number) => {
     if (!session) {
         throw new Error(`the session doesn't exist`);
     }
-
 }
 
 export const validateCondoId = async (id: number) => {
@@ -23,5 +24,25 @@ export const validateCondoId = async (id: number) => {
     if (!condo) {
         throw new Error(`the condo doesn't exist`);
     }
+}
 
+export const validateTowerId = async (id: number) => {
+    const tower = await Tower.findByPk(id);
+    if (!tower) {
+        throw new Error(`the tower doesn't exist`);
+    }
+}
+
+export const validateApartmentId = async (id: number) => {
+    const apartment = await Apartment.findByPk(id);
+    if (!apartment) {
+        throw new Error(`the apartment doesn't exist`);
+    }
+}
+
+export const validateCodeCondo = async (code_register: string) => {
+    const condo = await Condo.findOne({ where: { code_register } });
+    if (!condo) {
+        throw new Error(`the apartment doesn't exist`);
+    }
 }
