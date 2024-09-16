@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import User from "../models/user";
 import bcrypt from 'bcrypt';
 import generateJWT from "../helpers/generate-jwt";
@@ -8,6 +8,7 @@ import Apartment from "../models/apartment";
 import CondoSettings from "../models/condo_settings";
 import Tower from "../models/towers";
 import { v4 as uuidv4 } from 'uuid';
+import { uploadFileS3 } from "../helpers/upload-s3";
 
 export const login = async (req: Request, res: Response) => {
 
@@ -74,9 +75,13 @@ export const registerCondo = async (req: Request, res: Response) => {
     const payload = req.body;
     const uuid = uuidv4().replace(/-/g, '');
     const code_register = uuid.slice(0, 10);
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No logo field empty.');
+    }
     try {
-        let condo = await Condo.create({ ...payload, status: 'pending', time_zone: "America/Mexico_City", code_register });
-        res.json({ condo_id: condo.id });
+        const logo = await uploadFileS3(req.files.logo, "logos");
+        let condo = await Condo.create({ ...payload, status: 'pending', time_zone: "America/Mexico_City", code_register, logo_id: logo });
+        res.json(condo);
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -108,6 +113,23 @@ export const registerResident = async (req: Request, res: Response) => {
         const session = await UserSessions.create({ user_type, condo_id: condo.id, apartment_id, user_id: user.id, comite_member });
 
         res.json({ session, user });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Something went wrong, please contact support.'
+        });
+    }
+}
+
+export const uploadFiletest = async (req: Request, res: Response) => {
+
+    try {
+        const files = req.files.test;
+
+        const respose = await uploadFileS3(files);
+        console.log(respose);
+
+        res.json({ msg: "hola" });
     } catch (error) {
         console.log(error);
         res.status(500).json({

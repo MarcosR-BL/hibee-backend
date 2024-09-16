@@ -1,4 +1,5 @@
 import express, { Application } from 'express';
+import fileUpload from 'express-fileupload';
 
 import userRoutes from '../routes/users';
 import authRoutes from '../routes/auth';
@@ -36,6 +37,7 @@ class Server {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.static('public'));
+        this.app.use(fileUpload());
     }
 
     routes() {

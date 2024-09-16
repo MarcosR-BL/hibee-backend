@@ -23,6 +23,7 @@ export interface CondoInterface extends Model<InferAttributes<CondoInterface>, I
     createdAt: CreationOptional<Date>;
     updatedAt: CreationOptional<Date>;
     code_register?: CreationOptional<string>;
+    logo_id: CreationOptional<number>;
 }
 
 const Condo = db.define<CondoInterface>('condos', {
@@ -70,6 +71,9 @@ const Condo = db.define<CondoInterface>('condos', {
     },
     code_register: {
         type: DataTypes.STRING
+    },
+    logo_id: {
+        type: DataTypes.NUMBER
     }
 });
 
