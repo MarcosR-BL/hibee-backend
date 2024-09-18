@@ -8,7 +8,8 @@ import Apartment from "../models/apartment";
 import CondoSettings from "../models/condo_settings";
 import Tower from "../models/towers";
 import { v4 as uuidv4 } from 'uuid';
-import { uploadFileS3 } from "../helpers/upload-s3";
+import { signedURLS3, uploadFileS3 } from "../helpers/upload-s3";
+import File from "../models/files";
 
 export const login = async (req: Request, res: Response) => {
 
@@ -54,7 +55,11 @@ export const loginIntoCondo = async (req: Request, res: Response) => {
     const { session_id } = req.body;
     try {
 
-        const session = await UserSessions.findByPk(session_id, { include: [User, { model: Condo, include: [CondoSettings] }, { model: Apartment, include: [Tower] }] });
+        const session = await UserSessions.findByPk(session_id, { include: [User, { model: Condo, include: [CondoSettings, File] }, { model: Apartment, include: [Tower] }] });
+
+        if (session.condo.file) {
+            session.condo.file.url = await signedURLS3(`${session.condo.file.section}/${session.condo.file.name}`);
+        }
         //generar JWT
         const token = await generateJWT({
             userId: session.user_id,
@@ -75,7 +80,7 @@ export const registerCondo = async (req: Request, res: Response) => {
     const payload = req.body;
     const uuid = uuidv4().replace(/-/g, '');
     const code_register = uuid.slice(0, 10);
-    if (!req.files || Object.keys(req.files).length === 0) {
+    if (!req.files || Object.keys(req.files).length === 0 || !req.files.logo) {
         return res.status(400).send('No logo field empty.');
     }
     try {
@@ -113,23 +118,6 @@ export const registerResident = async (req: Request, res: Response) => {
         const session = await UserSessions.create({ user_type, condo_id: condo.id, apartment_id, user_id: user.id, comite_member });
 
         res.json({ session, user });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Something went wrong, please contact support.'
-        });
-    }
-}
-
-export const uploadFiletest = async (req: Request, res: Response) => {
-
-    try {
-        const files = req.files.test;
-
-        const respose = await uploadFileS3(files);
-        console.log(respose);
-
-        res.json({ msg: "hola" });
     } catch (error) {
         console.log(error);
         res.status(500).json({

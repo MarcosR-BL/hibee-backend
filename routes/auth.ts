@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { login, loginIntoCondo, registerAdmin, registerCondo, registerResident } from '../controllers/auth';
-import { check } from 'express-validator';
+import { body, check } from 'express-validator';
 import validateFields from '../middlewares/validate-fields';
 import { validateApartmentId, validateCodeCondo, validateCondoId, validatePlanId, validateSessionId, validateTowerId } from '../helpers/db-validators';
 

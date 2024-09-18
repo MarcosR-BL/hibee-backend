@@ -1,11 +1,9 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import db from "../db/connection";
-import CondoSettings from "./condo_settings";
-import UserSessions from "./user_session";
 import Plan from "./plans";
 import Apartment from "./apartment";
 import Tower from "./towers";
-
+import File, { fileDBInterface } from "./files";
 export interface CondoInterface extends Model<InferAttributes<CondoInterface>, InferCreationAttributes<CondoInterface>> {
     id?: CreationOptional<number>;
     name: string;
@@ -24,6 +22,7 @@ export interface CondoInterface extends Model<InferAttributes<CondoInterface>, I
     updatedAt: CreationOptional<Date>;
     code_register?: CreationOptional<string>;
     logo_id: CreationOptional<number>;
+    file?: fileDBInterface
 }
 
 const Condo = db.define<CondoInterface>('condos', {
@@ -89,6 +88,9 @@ Condo.afterCreate(async (condo: CondoInterface) => {
 
 Condo.belongsTo(Plan, { foreignKey: 'plan_id' });
 Plan.hasMany(Condo, { foreignKey: 'plan_id' });
+
+Condo.belongsTo(File, { foreignKey: 'logo_id' });
+File.hasOne(Condo, { foreignKey: 'logo_id' });
 
 
 export default Condo;

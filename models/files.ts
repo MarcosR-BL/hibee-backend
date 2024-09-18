@@ -1,6 +1,5 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import db from "../db/connection";
-import Tower from "./towers";
 
 export interface fileDBInterface extends Model<InferAttributes<fileDBInterface>, InferCreationAttributes<fileDBInterface>> {
     id?: CreationOptional<number>;
