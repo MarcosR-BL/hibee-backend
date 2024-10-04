@@ -1,8 +1,9 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import db from "../db/connection";
 import Condo, { CondoInterface } from "./condo";
-import User, { UserInterface } from "./user";
+import { UserInterface } from "./user";
 import Apartment from "./apartment";
+import File, { fileDBInterface } from "./files";
 
 export interface UserSessionsInterface extends Model<InferAttributes<UserSessionsInterface>, InferCreationAttributes<UserSessionsInterface>> {
     id?: CreationOptional<number>;
@@ -15,7 +16,9 @@ export interface UserSessionsInterface extends Model<InferAttributes<UserSession
     updatedAt: CreationOptional<Date>;
     condo?: CondoInterface;
     user?: UserInterface;
-    comite_member: boolean
+    comite_member: boolean;
+    profile_picture_id: number;
+    file?: fileDBInterface
 }
 
 const UserSessions = db.define<UserSessionsInterface>('user_sessions', {
@@ -42,6 +45,9 @@ const UserSessions = db.define<UserSessionsInterface>('user_sessions', {
     },
     comite_member: {
         type: DataTypes.BOOLEAN
+    },
+    profile_picture_id: {
+        type: DataTypes.NUMBER
     }
 });
 
@@ -50,6 +56,9 @@ UserSessions.belongsTo(Condo, { foreignKey: 'condo_id' });
 
 Apartment.hasOne(UserSessions, { foreignKey: 'apartment_id' });
 UserSessions.belongsTo(Apartment, { foreignKey: 'apartment_id' });
+
+UserSessions.belongsTo(File, { foreignKey: 'profile_picture_id' });
+File.hasOne(UserSessions, { foreignKey: 'profile_picture_id' });
 
 export default UserSessions;
 

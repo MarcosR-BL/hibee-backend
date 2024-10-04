@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { login, loginIntoCondo, registerAdmin, registerCondo, registerResident } from '../controllers/auth';
 import { check } from 'express-validator';
 import validateFields from '../middlewares/validate-fields';
-import { validateApartmentId, validateCodeCondo, validateCondoId, validatePlanId, validateSessionId, validateTowerId } from '../helpers/db-validators';
+import { validateApartmentId, validateCodeCondo, validateCondoId, validateEmailDuplicate, validatePlanId, validateSessionId, validateTowerId } from '../helpers/db-validators';
 
 const router = Router();
 
@@ -35,7 +35,7 @@ router.post('/register/condo', [
 router.post('/register/admin', [
     check('first_name').notEmpty(),
     check('last_name').notEmpty(),
-    check('email').notEmpty().bail().isEmail(),
+    check('email').notEmpty().bail().isEmail().bail().custom(validateEmailDuplicate),
     check('password').notEmpty(),
     check('phone').notEmpty(),
     check('condo_id').custom(validateCondoId),

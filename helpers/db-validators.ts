@@ -2,6 +2,7 @@ import Apartment from "../models/apartment";
 import Condo from "../models/condo";
 import Plan from "../models/plans"
 import Tower from "../models/towers";
+import User from "../models/user";
 import UserSessions from "../models/user_session";
 
 export const validatePlanId = async (id: number) => {
@@ -44,5 +45,12 @@ export const validateCodeCondo = async (code_register: string) => {
     const condo = await Condo.findOne({ where: { code_register } });
     if (!condo) {
         throw new Error(`the apartment doesn't exist`);
+    }
+}
+
+export const validateEmailDuplicate = async (email: string) => {
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+        throw new Error(`Duplicated email, insert another email`);
     }
 }
